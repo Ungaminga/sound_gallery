@@ -60,7 +60,7 @@ div {
 }
 div.big{
     display:block;
-    width:98%;
+    width:99%;
 }    """
     open("style.css", "w").write(css)
 
