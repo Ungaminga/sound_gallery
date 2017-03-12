@@ -126,6 +126,8 @@ def generate_tree_dirs(dir, deep=False, subdir = []):
     for F in ld:
         if re.search("(.git|.py|.html|.css)", F):
             continue
+        if F == scan_dir:
+            continue
         new_F = F
         if deep == True:
             new_F = dir+os.sep+F
@@ -166,13 +168,13 @@ def process_tree_dirs(tree):
         body += '</div>\n</div><!--style block, width !-->\n'
 
 if __name__ == "__main__":
-    dir = os.getcwd()
+    scan_dir = os.getcwd()
     if len(sys.argv) >= 2:
-        dir = (sys.argv[1])
+        scan_dir = (sys.argv[1])
     
     body = ""
     label_num = 0
-    tree = generate_tree_dirs(dir)
+    tree = generate_tree_dirs(scan_dir, scan_dir!="")
     process_tree_dirs(tree)
     generate_css()
     generate_html()
