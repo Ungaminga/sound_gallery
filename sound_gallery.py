@@ -16,10 +16,13 @@ li, ul{
     list-style: none;
     padding: 0 0 0 5px;
 }
+ul{
+    padding-top: 1px;
+}
 input{
     display:none;
 }
-a {
+a[download] {
    text-decoration: none;
 }
 input, label, a{
@@ -34,7 +37,6 @@ input ~ ul{
 input:checked:not(:disabled) ~ ul{
     display: block;
 }
-
 
 /* Custom input buttons */
 span.checked{
@@ -51,6 +53,15 @@ input:checked:not(:disabled) ~ label>span.unchecked{
 span.play {
     color:green; 
     font-size:20px;
+}
+
+/* A div for links */
+div.links{
+    right:0px;
+    position:absolute;
+    background-color: khaki;
+    border: green 2px solid;
+    padding: 2px;
 }
 
 /* For big directories */
@@ -108,9 +119,7 @@ def generate_html():
     </script>
 </head>
 <body>
-<ul>
 %s
-</ul>
 </body>
 </html>"""%body
     open("index.html", "w").write(html)
@@ -145,6 +154,7 @@ def generate_tree_dirs(dir, deep=False, subdir = []):
 def process_tree_dirs(tree):
     global body
     global label_num
+    
     big = len(tree) > 20
     i = 0
     for itr in tree:
@@ -173,15 +183,23 @@ def process_tree_dirs(tree):
     if big:
         body += '</div>\n</div><!--style block, width !-->\n'
 
+
 if __name__ == "__main__":
     scan_dir = os.getcwd()
     if len(sys.argv) >= 2:
         scan_dir = (sys.argv[1])
     
-    body = ""
+    body = """ <div class="links">
+<a href=https://github.com/Ungaminga/TES-L-Localizated-Sounds/archive/4e72e300ddee610d827ffcd05d9981a176bb1da2.zip>Download ru_</a>
+<br><a href = https://github.com/Ungaminga/TES-L-Localizated-Sounds/archive/master.zip>Download all</a>
+</div>
+<ul>
+    """
+    
     label_num = 0
     columns = 8
     tree = generate_tree_dirs(scan_dir, scan_dir!="")
     process_tree_dirs(tree)
+    body += "</ul>\n"
     generate_css()
     generate_html()
