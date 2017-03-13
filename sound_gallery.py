@@ -35,6 +35,7 @@ input:checked:not(:disabled) ~ ul{
     display: block;
 }
 
+
 /* Custom input buttons */
 span.checked{
     display: none;
@@ -147,14 +148,17 @@ def process_tree_dirs(tree):
     big = len(tree) > 20
     i = 0
     for itr in tree:
-        if big and ((i % (len(tree)//8) == 0)):
+        if big and ((i % (len(tree)//columns) == 0)):
             if i == 0:
                 body += '<div class="big">\n<div>\n'
             else:
                 body += '</div><div>\n'
 
         if type(itr) is Directory:
-            body += '<li><input type="checkbox" id="dir%i" /> <label for="dir%i">'%(label_num, label_num)
+            if i == 0:
+                body += '<li><input type="checkbox" id="dir%i" checked = "checked" /> <label for="dir%i">'%(label_num, label_num)           
+            else:
+                body += '<li><input type="checkbox" id="dir%i" /> <label for="dir%i">'%(label_num, label_num)
             body += '<span class="unchecked">&#10149;</span><span class="checked">&#8863; </span>%s</label> <ul>\n'%(itr.name)
             label_num+=1
             process_tree_dirs(itr)
@@ -176,6 +180,7 @@ if __name__ == "__main__":
     
     body = ""
     label_num = 0
+    columns = 8
     tree = generate_tree_dirs(scan_dir, scan_dir!="")
     process_tree_dirs(tree)
     generate_css()
