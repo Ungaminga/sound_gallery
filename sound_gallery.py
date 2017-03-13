@@ -73,20 +73,20 @@ def generate_html():
     <!-- Audio player !-->
     <script>
         var audio = "";
-        var id = "";
+        var ele = "";
         function onended()
         {
             delete audio;
             audio = ""
-            var span = document.getElementById(id).querySelectorAll('span')[0];
+            var span = ele.querySelectorAll('span')[0];
             span.style.color = "green";
             span.innerHTML = "&#9658";
             id = "";    
         }
 
-        function play(file, _id)
+        function play(_ele)
         {
-            id = _id;
+            ele = _ele;
             if (audio)
             {
                 audio.pause();
@@ -94,10 +94,12 @@ def generate_html():
             }
             else
             {
+                file = ele.getAttribute("file");
                 audio = new Audio(file);
                 audio.play();
+                audio.volume = 0.4;
                 audio.onended = onended;
-                var span = document.getElementById(id).querySelectorAll('span')[0];
+                var span = ele.querySelectorAll('span')[0];
                 span.style.color = "red";
                 span.innerHTML = "&#9632 ";
             }
@@ -159,7 +161,7 @@ def process_tree_dirs(tree):
             body += '</ul></li>\n'
         else:
             short = re.split("^.*\/", itr)[1]
-            body += '<li class="file"><a id="%s" onclick="play(\'%s\', \'%s\')">'%(short, itr, short)
+            body += '<li class="file"><a id="%s" onclick=\'play(this)\' file="%s">'%(short, itr)
             body += '<span class="play">&#9658</span>%s</a>'%(short)
             body += '<a href="%s" download>&#8659;</a></li>\n'%(itr)
 
