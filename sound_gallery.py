@@ -80,7 +80,7 @@ def generate_html():
     html = """<!DOCTYPE html>
 <html>
 <head>
-	<title></title>
+	<title>%s</title>
     <link href="style.css" rel="stylesheet" />
     <!-- Audio player !-->
     <script>
@@ -90,10 +90,9 @@ def generate_html():
         {
             delete audio;
             audio = ""
-            var span = ele.querySelectorAll('span')[0];
+            var span = ele.querySelectorAll('span')[0]; // change state to default
             span.style.color = "green";
             span.innerHTML = "&#9658";
-            id = "";    
         }
 
         function play(_ele)
@@ -111,7 +110,7 @@ def generate_html():
                 audio.play();
                 audio.volume = 0.4;
                 audio.onended = onended;
-                var span = ele.querySelectorAll('span')[0];
+                var span = ele.querySelectorAll('span')[0]; // play -> red stop square button
                 span.style.color = "red";
                 span.innerHTML = "&#9632 ";
             }
@@ -121,7 +120,7 @@ def generate_html():
 <body>
 %s
 </body>
-</html>"""%body
+</html>"""%(title, body)
     open("index.html", "w").write(html)
 
 # List-helper class for deteting directory and having it's name in it
@@ -175,7 +174,7 @@ def process_tree_dirs(tree):
             body += '</ul></li>\n'
         else:
             short = re.split("^.*\/", itr)[1]
-            body += '<li class="file"><a id="%s" onclick=\'play(this)\' file="%s">'%(short, itr)
+            body += '<li class="file"><a onclick=\'play(this)\' file="%s">'%(itr)
             body += '<span class="play">&#9658</span>%s</a>'%(short)
             body += '<a href="%s" download>&#8659;</a></li>\n'%(itr)
 
@@ -189,15 +188,16 @@ if __name__ == "__main__":
     if len(sys.argv) >= 2:
         scan_dir = (sys.argv[1])
     
-    body = """ <div class="links">
-<a href=https://github.com/Ungaminga/TES-L-Localizated-Sounds/archive/4e72e300ddee610d827ffcd05d9981a176bb1da2.zip>Download ru_</a>
-<br><a href = https://github.com/Ungaminga/TES-L-Localizated-Sounds/archive/master.zip>Download all</a>
-</div>
+    body = """     <div class="links">
+        <a href=https://github.com/Ungaminga/TES-L-Localizated-Sounds/archive/4e72e300ddee610d827ffcd05d9981a176bb1da2.zip>Download ru_</a>
+        <br><a href = https://github.com/Ungaminga/TES-L-Localizated-Sounds/archive/master.zip>Download all</a>
+    </div>
 <ul>
     """
     
     label_num = 0
     columns = 8
+    title = "TES:L Sounds Gallery"
     tree = generate_tree_dirs(scan_dir, scan_dir!="")
     process_tree_dirs(tree)
     body += "</ul>\n"
