@@ -73,7 +73,10 @@ div {
 div.big{
     display:block;
     width:99%;
-}    """
+}
+audio{
+      display:block;
+}"""
     open("style.css", "w").write(css)
 
 def generate_html():
@@ -88,11 +91,14 @@ def generate_html():
         var ele = "";
         function onended()
         {
+            audio.controls = false;
+            ele.nextElementSibling.appendChild(audio);
             delete audio;
             audio = ""
             var span = ele.querySelectorAll('span')[0]; // change state to default
             span.style.color = "green";
             span.innerHTML = "&#9658";
+            ele.title = "play";
         }
 
         function play(_ele)
@@ -106,6 +112,7 @@ def generate_html():
             }
             ele = _ele;
             file = ele.getAttribute("file");
+            ele.title = "stop";
             audio = new Audio(file);
             audio.play();
             audio.volume = 0.4;
@@ -113,6 +120,11 @@ def generate_html():
             var span = ele.querySelectorAll('span')[0]; // play -> red stop square button
             span.style.color = "red";
             span.innerHTML = "&#9632 ";
+            audio.onloadedmetadata = function(){
+            if (audio.duration > 5){
+                audio.controls = true;
+                ele.nextElementSibling.appendChild(audio);
+            }}
         }
     </script>
 </head>
@@ -215,9 +227,9 @@ def process_tree_dirs(tree):
             body += '</ul></li>\n'
         else: #if type(itr) is Directory:
             short = re.split("^.*\/", itr)[1]
-            body += '<li class="file"><a onclick=\'play(this)\' file="%s">'%(itr)
+            body += '<li class="file"><a onclick=\'play(this)\' file="%s" title="play">'%(itr)
             body += '<span class="play">&#9658</span>%s</a>'%(short)
-            body += '<a href="%s" download>&#8659;</a></li>\n'%(itr)
+            body += '<a href="%s" download title="Download audio">&#8659;</a></li>\n'%(itr)
 
         i+=1
     if big:
