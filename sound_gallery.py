@@ -97,23 +97,22 @@ def generate_html():
 
         function play(_ele)
         {
-            ele = _ele;
             if (audio)
             {
                 audio.pause();
                 onended();
+                if (ele == _ele)
+                    return;
             }
-            else
-            {
-                file = ele.getAttribute("file");
-                audio = new Audio(file);
-                audio.play();
-                audio.volume = 0.4;
-                audio.onended = onended;
-                var span = ele.querySelectorAll('span')[0]; // play -> red stop square button
-                span.style.color = "red";
-                span.innerHTML = "&#9632 ";
-            }
+            ele = _ele;
+            file = ele.getAttribute("file");
+            audio = new Audio(file);
+            audio.play();
+            audio.volume = 0.4;
+            audio.onended = onended;
+            var span = ele.querySelectorAll('span')[0]; // play -> red stop square button
+            span.style.color = "red";
+            span.innerHTML = "&#9632 ";
         }
     </script>
 </head>
