@@ -130,9 +130,19 @@ def generate_html():
 </head>
 <body>
 %s
+%s
 </body>
-</html>"""%(title, body)
+</html>"""%(title, generate_links(), body)
     open("index.html", "w").write(html)
+
+def generate_links():
+    ret = ""
+    if with_links == True and len(links):
+        ret += '<div class="links">\n'
+        for link in links:
+            ret += '<a href="%s">%s</a><br>\n'%(link[0], link[1])
+        ret += '</div>\n'
+    return ret
 
 # List-helper class for deteting directory and having it's name in it
 class Directory(list):
@@ -238,16 +248,13 @@ def process_tree_dirs(tree):
 
 if __name__ == "__main__":
     scan_dir = os.getcwd()
+    with_links = False
     if len(sys.argv) >= 2:
         scan_dir = (sys.argv[1])
+    if len(sys.argv) >= 3:
+        if (sys.argv[2] == "--with-links"):
+            with_links = True
     
-    body = """     <div class="links">
-        <a href=https://github.com/Ungaminga/TES-L-Localizated-Sounds/archive/4e72e300ddee610d827ffcd05d9981a176bb1da2.zip>Download ru_</a>
-        <br><a href = https://github.com/Ungaminga/TES-L-Localizated-Sounds/archive/master.zip>Download all</a>
-    </div>
-<ul>
-    """
-
     sorting_order = [
     "ru_cards_sound",
     "ru_portrait_shout",
@@ -256,6 +263,11 @@ if __name__ == "__main__":
     "card_nonloc",
     "ambience",
     "ui"]
+    
+    # Default links to add. You can type whatever you want
+    links = [
+    ("https://github.com/Ungaminga/TES-L-Localizated-Sounds/archive/4e72e300ddee610d827ffcd05d9981a176bb1da2.zip", "Download ru_"),
+    ("https://github.com/Ungaminga/TES-L-Localizated-Sounds/archive/master.zip", "Download all")]
 
     label_num = 0
     checked = True
@@ -263,6 +275,7 @@ if __name__ == "__main__":
     columns_no_subdir = columns - 3
     title = "TES:L Sounds Gallery"
     tree = generate_tree_dirs(scan_dir, scan_dir!="")
+    body = "<ul>"
     process_tree_dirs(tree)
     body += "</ul>\n"
     generate_css()
