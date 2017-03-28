@@ -22,11 +22,33 @@ ul{
 input{
     display:none;
 }
+
+input, label, a{
+    cursor: pointer;
+}
+
 a[download] {
    text-decoration: none;
 }
-input, label, a{
-    cursor: pointer;
+
+a[download] > span{
+   position: relative;
+}
+
+@keyframes updown{
+  from {
+    top: -2px;
+  }
+
+  to {
+    top: 2px;
+  }
+}
+a[download]:hover > span{
+    animation-duration: 0.5s;
+    animation-name: updown;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
 }
 
 /* Directory show-hide */
@@ -239,22 +261,50 @@ def process_tree_dirs(tree):
             short = re.split("^.*\/", itr)[1]
             body += '<li class="file"><a onclick=\'play(this)\' file="%s" title="play">'%(itr)
             body += '<span class="play">&#9658</span>%s</a>'%(short)
-            body += '<a href="%s" download title="Download audio">&#8659;</a></li>\n'%(itr)
+            body += '<a href="%s" download title="Download audio"><span>&#8659;</span></a>'%(itr)
+            if with_mp3:
+                mp3 = itr.replace(scan_dir, "mp3", 1)
+                mp3 = mp3.replace(".wav", ".mp3")
+                dir = os.path.dirname(mp3)
+                if not os.path.exists(dir):
+                    os.makedirs(dir)
 
+                if not os.path.exists(mp3):
+                    sound = pydub.AudioSegment.from_wav(itr)
+                    sound.export(mp3, format="mp3")
+
+                body += '| <a href="%s" download title="Download MP3"><span>&#8659;</span><sub>MP3</sub></a>'
+            body += '\n'
         i+=1
     if big:
         body += '</div>\n</div><!--style block, width !-->\n'
 
 
 if __name__ == "__main__":
-    scan_dir = os.getcwd()
+    argv = sys.argv
+    scan_dir = ""
     with_links = False
-    if len(sys.argv) >= 2:
-        scan_dir = (sys.argv[1])
-    if len(sys.argv) >= 3:
-        if (sys.argv[2] == "--with-links"):
-            with_links = True
-    
+    with_mp3 = False
+
+    for i in range(1, 5):
+        if len(argv) > i:
+            if argv[i] == "--with-mp3":
+                with_mp3 = True
+                import pydub
+                continue
+
+            if (argv[i] == "--with-links"):
+                with_links = True
+                continue
+
+            if scan_dir == "":
+                scan_dir = str(argv[i])
+                continue
+
+    if scan_dir == "":
+        scan_dir = os.getcwd()
+
+
     sorting_order = [
     "ru_cards_sound",
     "ru_portrait_shout",
@@ -271,11 +321,11 @@ if __name__ == "__main__":
 
     label_num = 0
     checked = True
-    columns = 9
+    columns = 8
     columns_no_subdir = columns - 3
     title = "TES:L Sounds Gallery"
     tree = generate_tree_dirs(scan_dir, scan_dir!="")
-    body = "<ul>"
+    body = "<ul>\n"
     process_tree_dirs(tree)
     body += "</ul>\n"
     generate_css()
