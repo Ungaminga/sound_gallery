@@ -273,7 +273,7 @@ def process_tree_dirs(tree):
                     sound = pydub.AudioSegment.from_wav(itr)
                     sound.export(mp3, format="mp3")
 
-                body += '| <a href="%s" download title="Download MP3"><span>&#8659;</span><sub>MP3</sub></a>'
+                body += '| <a href="%s" download title="Download MP3"><span>&#8659;</span><sub>MP3</sub></a>'%mp3
             body += '\n'
         i+=1
     if big:
