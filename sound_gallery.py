@@ -87,15 +87,19 @@ div.links{
 }
 
 /* For big directories */
-div {
-     display: inline;
-     float: left;
-     padding: 0px 20px 0px 0px;
-}
 div.big{
     display:block;
     width:99%;
 }
+
+td{
+   vertical-align: top;
+}
+
+table{
+      border: 1px solid black;
+}
+
 audio{
       display:block;
 }"""
@@ -218,7 +222,7 @@ def generate_tree_dirs(dir, deep=False, subdir = []):
     return dirs
 
 def check_bigdir_for_new_div(tree, i):
-    if not(len(tree) - i > 2):
+    if not(len(tree) - i > 10):
         return False
 
     if type(tree) is Directory and tree.no_subdirs == True:
@@ -238,9 +242,9 @@ def process_tree_dirs(tree):
     for itr in tree:
         if big and check_bigdir_for_new_div(tree, i):
             if i == 0:
-                body += '<div class="big">\n<div>\n'
+                body += '<div class="big"><table>\n<tr>\n<td>'
             else:
-                body += '</div><div>\n'
+                body += '</td><td>\n'
 
         if type(itr) is Directory:
             if itr.single_file == True:
@@ -277,7 +281,7 @@ def process_tree_dirs(tree):
             body += '\n'
         i+=1
     if big:
-        body += '</div>\n</div><!--style block, width !-->\n'
+        body += '</td></tr>\n</table></div><!--style block, width !-->\n'
 
 
 if __name__ == "__main__":
@@ -321,7 +325,7 @@ if __name__ == "__main__":
 
     label_num = 0
     checked = True
-    columns = 8
+    columns = 6
     columns_no_subdir = columns - 3
     title = "TES:L Sounds Gallery"
     tree = generate_tree_dirs(scan_dir, scan_dir!="")
